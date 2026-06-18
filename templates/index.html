@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}The Graduate Route — Choose Your Route{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">#PaveYourWay</span>
+      <h1>Your application should not feel like guesswork.<br>It should feel like a strategy.</h1>
+      <p>
+        At The Graduate Route, every service begins with a consultation so we can
+        understand your profile, goals, timeline, target universities, and
+        scholarship plans. From there, we recommend the route that fits best,
+        whether that is full end-to-end guidance or one focused service at a
+        specific stage of the process.
+      </p>
+      <div class="hero-actions">
+        <a href="{{ url_for('contact') }}" class="btn btn-primary">Book a Consultation</a>
+        <a href="{{ url_for('services') }}" class="btn btn-outline">See all services</a>
+      </div>
+    </div>
+
+    <div class="hero-route">
+      <div class="hero-route-inner">
+        <p class="kicker">Choose your route</p>
+        <h3>Built around you, not a template</h3>
+        <ul class="hero-route-list">
+          <li><span class="dot"></span> Complete end-to-end application support</li>
+          <li><span class="dot"></span> Single scholarship end-to-end support</li>
+          <li><span class="dot"></span> One focused service: essays, CV, or interview</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow sage">How it works</span>
+      <h2>Four steps, one connected strategy</h2>
+      <p>Instead of treating each document separately, we build one clear application strategy around your shortlist, essays, CV, recommendations, and interviews.</p>
+    </div>
+
+    <div class="route-path" style="max-width: 640px; margin: 0 auto;">
+      <div class="route-step">
+        <div class="route-marker">01</div>
+        <div>
+          <h3>Start with an Initial Consultation</h3>
+          <p>We begin by understanding where you are, what you are applying for, what your goals are, and what kind of support would make the most sense.</p>
+        </div>
+      </div>
+      <div class="route-step">
+        <div class="route-marker">02</div>
+        <div>
+          <h3>Get a recommended support route</h3>
+          <p>After the consultation, we help you identify whether you need a full package, a scholarship-specific route, undergraduate support, or focused help with one part of the application.</p>
+        </div>
+      </div>
+      <div class="route-step">
+        <div class="route-marker">03</div>
+        <div>
+          <h3>Work one-on-one on your application</h3>
+          <p>Once your support route is confirmed, we work closely with you on the strategy, documents, essays, interviews, or applications included in your service.</p>
+        </div>
+      </div>
+      <div class="route-step">
+        <div class="route-marker">04</div>
+        <div>
+          <h3>Submit with more clarity and direction</h3>
+          <p>The goal is to help every part of your application feel intentional, coherent, and genuinely yours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section tinted">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Signature packages</span>
+      <h2>Choose the full route, or build your own</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="eyebrow charcoal">Most comprehensive</span>
+        <h3>Complete End-to-End Application Support</h3>
+        <p>The full Graduate Route experience, from first strategy call to final submission, across your shortlist, essays, CV, recommendations, and interviews.</p>
+        <p class="best-for">Best for: students applying to multiple universities, scholarships, or countries.</p>
+      </div>
+      <div class="card sage-tint">
+        <span class="eyebrow sage">One major scholarship</span>
+        <h3>Single Scholarship End-to-End Support</h3>
+        <p>A complete scholarship application route built around your story, goals, leadership, academic direction, and future plans.</p>
+        <p class="best-for">Best for: students applying to one major scholarship who want focused support from strategy to submission.</p>
+      </div>
+      <div class="card">
+        <span class="eyebrow charcoal">Up to three scholarships</span>
+        <h3>Three-Scholarship End-to-End Bundle</h3>
+        <p>One strong application foundation, adapted strategically for each scholarship's requirements instead of repeating the same essay ideas.</p>
+        <p class="best-for">Best for: students applying to up to three competitive scholarships who want structured, one-on-one support.</p>
+      </div>
+    </div>
+
+    <div class="text-center" style="margin-top: 32px;">
+      <a href="{{ url_for('services') }}" class="btn btn-dark">See every service in detail</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-band">
+      <h2>Not sure which route is yours?</h2>
+      <p>Start with the Initial Consultation. We will look at where you are, what you are applying for, and what kind of support will be most useful for your goals.</p>
+      <div class="btn-actions">
+        <a href="{{ url_for('contact') }}" class="btn btn-primary">Book the Initial Consultation</a>
+        <a href="{{ url_for('faq') }}" class="btn btn-outline" style="border-color: var(--cream); color: var(--cream);">Read the FAQ</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

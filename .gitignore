@@ -1,0 +1,9 @@
+venv/
+test_venv/
+__pycache__/
+*.pyc
+.env
+data/knowledge_base.json
+data_store/leads.csv
+data_store/cv_uploads/*
+!data_store/cv_uploads/.gitkeep

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Request a Service — The Graduate Route{% endblock %}
+
+{% block content %}
+<section class="hero" style="padding-bottom: 24px;">
+  <div class="container">
+    <span class="eyebrow">Request a service</span>
+    <h1 class="mt-0">Tell us a little about yourself</h1>
+    <p style="max-width: 600px;">
+      Tell us about yourself and the support you're looking for. We'll review
+      your details and get back to you with the most suitable next step.
+      Let's #PaveYourWay together.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width: 720px;">
+
+    {% if submitted %}
+      <div class="card sage-tint" style="margin-bottom: 28px;">
+        <h3>Thanks, {{ submitted_name }}.</h3>
+        <p>We've received your details and will get back to you shortly with the most suitable next step.</p>
+      </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('contact') }}" enctype="multipart/form-data">
+      <div class="form-grid">
+        <div class="field">
+          <label for="full_name">Full Name</label>
+          <input type="text" id="full_name" name="full_name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="field">
+          <label for="whatsapp">WhatsApp Number</label>
+          <input type="tel" id="whatsapp" name="whatsapp" required>
+        </div>
+        <div class="field">
+          <label for="country">Country of Residence</label>
+          <input type="text" id="country" name="country" required>
+        </div>
+        <div class="field">
+          <label for="applying_for">What are you applying for?</label>
+          <select id="applying_for" name="applying_for" required>
+            <option value="" disabled selected>Select one</option>
+            <option value="Undergraduate study">Undergraduate study</option>
+            <option value="Postgraduate study">Postgraduate study</option>
+            <option value="Fellowship or other opportunity">Fellowship or other opportunity</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="service">Which service are you interested in?</label>
+          <select id="service" name="service" required>
+            <option value="" disabled selected>Select one</option>
+            <option value="Initial Consultation">Initial Consultation</option>
+            <option value="End-to-End Application Support">End-to-End Application Support</option>
+            <option value="Not sure">Not sure — I need guidance</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="target_countries">Target Country or Countries</label>
+          <input type="text" id="target_countries" name="target_countries">
+        </div>
+        <div class="field full">
+          <label for="cv">Upload Your CV</label>
+          <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx">
+        </div>
+        <div class="field full">
+          <label for="notes">Anything else you would like us to know?</label>
+          <textarea id="notes" name="notes"></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

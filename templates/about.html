@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}About — The Graduate Route{% endblock %}
+
+{% block content %}
+<section class="hero" style="padding-bottom: 24px;">
+  <div class="container">
+    <span class="eyebrow">About us</span>
+    <h1 class="mt-0">You should not have to figure it all out alone</h1>
+    <p style="max-width: 640px;">
+      The Graduate Route started with Fatima, our founder, sitting exactly where
+      many students are now: excited about what could come next, but overwhelmed
+      by how to get there. There were forms, deadlines, essays, scholarships, and
+      plenty of advice, but very little that answered the questions she actually
+      had. That is where The Graduate Route began: with a promise to offer
+      students the honest guidance, encouragement, and personal investment Fatima
+      had once been searching for herself.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="card-grid two">
+      <div class="card">
+        <h3>Personal support from someone who knows your story</h3>
+        <p>The person helping you shape your strategy is also the person reading your essays, reviewing your documents, and following your progress. Your application is not passed between different people or treated as a series of disconnected tasks.</p>
+        <p>For full-service support, Fatima works with a limited number of students so every application receives genuine time and attention, like having a strategist, mentor, and cheerleader in your corner.</p>
+      </div>
+      <div class="card sage-tint">
+        <h3>Your application should sound like you</h3>
+        <p>The strongest applications are not built from exaggerated achievements or stories created to impress. They come from understanding what matters to you and expressing it with clarity.</p>
+        <p>For postgraduate applicants, that may mean bringing greater focus to your ideas and long-term ambitions. For undergraduate applicants, it may mean exploring genuine interests and developing meaningful leadership.</p>
+      </div>
+      <div class="card sage-tint">
+        <h3>Education can be the start of something bigger</h3>
+        <p>We love working with students who want their education to lead somewhere meaningful. The right degree or scholarship can open doors to stronger research, better ideas, and work that benefits communities in Pakistan and beyond.</p>
+      </div>
+      <div class="card">
+        <h3>Your route, built with you</h3>
+        <p>No two students bring the same background, ambitions, or questions, so their applications should not follow the same formula either. We help you understand your options, make informed decisions, and build an application that feels focused, honest, and unmistakably yours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section tinted">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow sage">Meet the team</span>
+      <h2>The people behind the route</h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <p class="name">Fatima Ebadat Khan</p>
+        <p class="role">Founder</p>
+      </div>
+      <div class="team-card">
+        <p class="name">Aaniya Aizaz</p>
+        <p class="role">Founding Team — Head of Operations and Marketing</p>
+      </div>
+      <div class="team-card">
+        <p class="name">Shafay Rameez</p>
+        <p class="role">Founding Team — Head of Technology and Web Development</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-band">
+      <h2>You bring the story. We help you find the clearest way forward.</h2>
+      <div class="btn-actions">
+        <a href="{{ url_for('contact') }}" class="btn btn-primary">Book a Consultation</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
