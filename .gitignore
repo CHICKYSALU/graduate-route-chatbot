@@ -1,5 +1,6 @@
 venv/
 test_venv/
+secrets/
 __pycache__/
 *.pyc
 .env

@@ -118,12 +118,17 @@ visitor book the Initial Consultation or use the contact form for that question.
 
 
 def _write_to_sheets(row: dict) -> None:
-    """Append one lead row to the configured Google Sheet, adding headers first
-    if the sheet is empty.  Called only when _sheets_worksheet is not None."""
+    """Append one lead row to the configured Google Sheet.
+
+    On the first call per server session, checks whether row 1 already holds
+    the expected headers.  If the sheet is empty, or if row 1 doesn't match,
+    the header row is inserted at position 1 before appending data.
+    """
     global _sheets_headers_written
     if not _sheets_headers_written:
-        if not _sheets_worksheet.get_all_values():
-            _sheets_worksheet.append_row(LEAD_FIELDS)
+        first_row = _sheets_worksheet.row_values(1)
+        if first_row != LEAD_FIELDS:
+            _sheets_worksheet.insert_row(LEAD_FIELDS, index=1)
         _sheets_headers_written = True
     _sheets_worksheet.append_row([row[f] for f in LEAD_FIELDS])
 

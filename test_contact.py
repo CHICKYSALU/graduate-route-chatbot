@@ -101,10 +101,10 @@ def test_contact_no_sheets_no_email(client, monkeypatch):
 
 # ── Tests: Google Sheets ──────────────────────────────────────────────────────
 
-def test_contact_writes_header_then_data_to_sheets(client, monkeypatch):
-    """On an empty sheet: header row is appended first, then the data row."""
+def test_contact_inserts_header_when_row1_is_empty(client, monkeypatch):
+    """Empty sheet (row_values returns []): header inserted at row 1, then data appended."""
     mock_ws = MagicMock()
-    mock_ws.get_all_values.return_value = []
+    mock_ws.row_values.return_value = []          # sheet is blank
     monkeypatch.setattr(_app, "_sheets_worksheet", mock_ws)
     monkeypatch.setattr(_app, "_sheets_headers_written", False)
     monkeypatch.setattr(_app, "_SMTP_EMAIL", "")
@@ -112,23 +112,36 @@ def test_contact_writes_header_then_data_to_sheets(client, monkeypatch):
     r = client.post("/contact", data=_FORM)
     assert r.status_code == 200
 
-    assert mock_ws.append_row.call_count == 2
-    header_call, data_call = mock_ws.append_row.call_args_list
-    assert header_call[0][0] == _app.LEAD_FIELDS
-    assert "jane@example.com" in data_call[0][0]
+    mock_ws.insert_row.assert_called_once_with(_app.LEAD_FIELDS, index=1)
+    mock_ws.append_row.assert_called_once()
+    assert "jane@example.com" in mock_ws.append_row.call_args[0][0]
 
 
-def test_contact_skips_header_when_sheet_has_data(client, monkeypatch):
-    """Sheet already contains rows: no extra header append."""
+def test_contact_inserts_header_when_row1_wrong(client, monkeypatch):
+    """Sheet exists but row 1 doesn't match LEAD_FIELDS: header inserted at row 1."""
     mock_ws = MagicMock()
-    mock_ws.get_all_values.return_value = [_app.LEAD_FIELDS, ["existing", "row"]]
+    mock_ws.row_values.return_value = ["wrong", "columns"]
     monkeypatch.setattr(_app, "_sheets_worksheet", mock_ws)
     monkeypatch.setattr(_app, "_sheets_headers_written", False)
     monkeypatch.setattr(_app, "_SMTP_EMAIL", "")
 
     client.post("/contact", data=_FORM)
 
-    assert mock_ws.append_row.call_count == 1  # only the data row
+    mock_ws.insert_row.assert_called_once_with(_app.LEAD_FIELDS, index=1)
+
+
+def test_contact_skips_header_when_row1_correct(client, monkeypatch):
+    """Row 1 already has the right headers: no insert_row call."""
+    mock_ws = MagicMock()
+    mock_ws.row_values.return_value = _app.LEAD_FIELDS
+    monkeypatch.setattr(_app, "_sheets_worksheet", mock_ws)
+    monkeypatch.setattr(_app, "_sheets_headers_written", False)
+    monkeypatch.setattr(_app, "_SMTP_EMAIL", "")
+
+    client.post("/contact", data=_FORM)
+
+    mock_ws.insert_row.assert_not_called()
+    mock_ws.append_row.assert_called_once()  # only the data row
 
 
 def test_contact_skips_header_check_after_first_write(client, monkeypatch):
@@ -147,7 +160,7 @@ def test_contact_skips_header_check_after_first_write(client, monkeypatch):
 def test_contact_sheets_error_doesnt_crash(client, monkeypatch):
     """A Sheets exception is caught; the HTTP response still succeeds."""
     mock_ws = MagicMock()
-    mock_ws.get_all_values.side_effect = Exception("network error")
+    mock_ws.row_values.side_effect = Exception("network error")
     monkeypatch.setattr(_app, "_sheets_worksheet", mock_ws)
     monkeypatch.setattr(_app, "_sheets_headers_written", False)
     monkeypatch.setattr(_app, "_SMTP_EMAIL", "")
