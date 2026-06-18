@@ -67,6 +67,67 @@ cat data_store/leads.csv
 ls data_store/cv_uploads/
 ```
 
+## Optional: Google Sheets lead logging
+
+Every contact form submission can be appended as a new row to a Google Sheet.
+Both environment variables must be set; if either is missing the app starts
+normally and prints a notice instead of crashing.
+
+**Setup steps:**
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) → create or
+   select a project.
+2. Enable the **Google Sheets API** and the **Google Drive API** for that project.
+3. Create a **Service Account**: IAM & Admin → Service Accounts → Create.
+   No roles are needed at project level.
+4. Under the service account → Keys → Add Key → JSON. Download the file and
+   save it somewhere safe (e.g. `secrets/service-account.json`).  
+   **Do not commit this file.** It is already covered by `.gitignore` if you
+   keep it under `secrets/`.
+5. Create a new Google Sheet. Copy its ID from the URL:
+   `https://docs.google.com/spreadsheets/d/<SHEET_ID>/edit`
+6. Share the sheet with the service account's email address
+   (found in the JSON file as `"client_email"`) with **Editor** access.
+7. Add to your `.env`:
+   ```
+   GOOGLE_SHEETS_CREDENTIALS_FILE=/absolute/path/to/service-account.json
+   GOOGLE_SHEET_ID=your_sheet_id_here
+   ```
+
+The app writes a header row automatically on the first submission if the sheet
+is empty. Subsequent submissions append one row each.
+
+## Optional: Gmail confirmation email
+
+A confirmation email is sent automatically to the address the visitor submits.
+Both environment variables must be set; if either is missing the app starts
+normally and prints a notice instead of crashing.
+
+**Setup steps:**
+
+1. Use a Gmail account you control (ideally a dedicated one for the site).
+2. Enable **2-Step Verification** on the account if not already active:
+   Google Account → Security → 2-Step Verification.
+3. Create an **App Password**: Google Account → Security → App Passwords.
+   Choose "Mail" as the app and "Other" as the device (name it anything).
+   Copy the 16-character password shown.
+4. Add to your `.env`:
+   ```
+   SMTP_EMAIL=you@gmail.com
+   SMTP_APP_PASSWORD=xxxx_xxxx_xxxx_xxxx
+   ```
+
+The email is sent over Gmail's SMTP server (smtp.gmail.com, port 587, STARTTLS).
+
+## Running tests
+
+```bash
+pip install -r requirements.txt
+pytest test_contact.py -v
+```
+
+The tests mock both `gspread` and `smtplib` so no real credentials are needed.
+
 ## Deploying
 
 Push this repo to GitHub, then deploy on Render (or similar):

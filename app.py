@@ -54,6 +54,38 @@ LEADS_CSV = os.path.join(LEADS_DIR, "leads.csv")
 CV_UPLOAD_DIR = os.path.join(LEADS_DIR, "cv_uploads")
 os.makedirs(CV_UPLOAD_DIR, exist_ok=True)
 
+# ── Optional: Google Sheets integration ──────────────────────────────────────
+_SHEETS_CREDS_FILE = os.environ.get("GOOGLE_SHEETS_CREDENTIALS_FILE", "")
+_SHEETS_SHEET_ID   = os.environ.get("GOOGLE_SHEET_ID", "")
+_sheets_worksheet  = None
+_sheets_headers_written = False
+
+if _SHEETS_CREDS_FILE and _SHEETS_SHEET_ID:
+    try:
+        import gspread as _gspread
+        _gc = _gspread.service_account(filename=_SHEETS_CREDS_FILE)
+        _sheets_worksheet = _gc.open_by_key(_SHEETS_SHEET_ID).sheet1
+        print("Google Sheets integration enabled.")
+    except Exception as _e:
+        print(f"Google Sheets integration disabled: {_e}")
+else:
+    print(
+        "Google Sheets integration disabled: "
+        "GOOGLE_SHEETS_CREDENTIALS_FILE or GOOGLE_SHEET_ID not set in .env."
+    )
+
+# ── Optional: Gmail confirmation email ───────────────────────────────────────
+_SMTP_EMAIL        = os.environ.get("SMTP_EMAIL", "")
+_SMTP_APP_PASSWORD = os.environ.get("SMTP_APP_PASSWORD", "")
+
+if _SMTP_EMAIL and _SMTP_APP_PASSWORD:
+    print("Email confirmation enabled.")
+else:
+    print(
+        "Email confirmation disabled: "
+        "SMTP_EMAIL or SMTP_APP_PASSWORD not set in .env."
+    )
+
 LEAD_FIELDS = [
     "timestamp", "full_name", "email", "whatsapp", "country",
     "applying_for", "service", "target_countries", "cv_filename", "notes",
@@ -83,6 +115,50 @@ lists unless the visitor specifically asks for a breakdown.
 - If the context does not contain the answer, say you are not sure and suggest the \
 visitor book the Initial Consultation or use the contact form for that question.
 """
+
+
+def _write_to_sheets(row: dict) -> None:
+    """Append one lead row to the configured Google Sheet, adding headers first
+    if the sheet is empty.  Called only when _sheets_worksheet is not None."""
+    global _sheets_headers_written
+    if not _sheets_headers_written:
+        if not _sheets_worksheet.get_all_values():
+            _sheets_worksheet.append_row(LEAD_FIELDS)
+        _sheets_headers_written = True
+    _sheets_worksheet.append_row([row[f] for f in LEAD_FIELDS])
+
+
+def _send_confirmation_email(row: dict) -> None:
+    """Send a confirmation email to the lead via Gmail SMTP."""
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    first_name = row["full_name"].split()[0] if row["full_name"] else "there"
+    body = (
+        f"Hi {first_name},\n\n"
+        "Thank you for reaching out to The Graduate Route! We have received "
+        "your request and will be in touch within 1–2 business days.\n\n"
+        "Here is a summary of your submission:\n"
+        f"  • Service of interest : {row['service'] or '—'}\n"
+        f"  • Applying for        : {row['applying_for'] or '—'}\n"
+        f"  • Currently based in  : {row['country'] or '—'}\n"
+        f"  • Target countries    : {row['target_countries'] or '—'}\n\n"
+        "In the meantime, feel free to browse our services page or check our FAQ.\n\n"
+        "Warm regards,\n"
+        "The Graduate Route Team\n"
+    )
+
+    msg = MIMEMultipart()
+    msg["Subject"] = "We’ve received your request — The Graduate Route"
+    msg["From"] = _SMTP_EMAIL
+    msg["To"] = row["email"]
+    msg.attach(MIMEText(body, "plain"))
+
+    with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+        smtp.starttls()
+        smtp.login(_SMTP_EMAIL, _SMTP_APP_PASSWORD)
+        smtp.sendmail(_SMTP_EMAIL, [row["email"]], msg.as_string())
 
 
 def cosine_similarity(a: list, b: list) -> float:
@@ -173,6 +249,18 @@ def contact():
         if not file_exists:
             writer.writeheader()
         writer.writerow(row)
+
+    if _sheets_worksheet is not None:
+        try:
+            _write_to_sheets(row)
+        except Exception as e:
+            print(f"Google Sheets write failed: {e}")
+
+    if _SMTP_EMAIL and _SMTP_APP_PASSWORD and row["email"]:
+        try:
+            _send_confirmation_email(row)
+        except Exception as e:
+            print(f"Confirmation email failed: {e}")
 
     return render_template(
         "contact.html", active="contact", submitted=True,
