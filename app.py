@@ -35,7 +35,7 @@ if not GEMINI_API_KEY:
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
-EMBEDDING_MODEL = "models/embedding-001"
+EMBEDDING_MODEL = "models/gemini-embedding-001"
 KNOWLEDGE_BASE_PATH = "data/knowledge_base.json"
 
 if not os.path.exists(KNOWLEDGE_BASE_PATH):

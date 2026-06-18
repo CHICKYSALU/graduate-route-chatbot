@@ -32,7 +32,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 DATA_PATH = "data/services.md"
 OUTPUT_PATH = "data/knowledge_base.json"
-EMBEDDING_MODEL = "models/embedding-001"
+EMBEDDING_MODEL = "models/gemini-embedding-001"
 
 
 def clean_text(text: str) -> str:
